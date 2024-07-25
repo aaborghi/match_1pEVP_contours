@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from match_1pevp import beyn, train, evaluate
+from match_1pevp import beyn, loewner, train, evaluate
 from helpers_test import runTest
 np.random.seed(42)
 
@@ -18,7 +18,11 @@ p_range = [-50., 50.]
 l_sketch = 5 # number of sketching directions in Beyn's method
 lhs = np.random.randn(l_sketch, 3) + 1j * np.random.randn(l_sketch, 3) # left sketching matrix
 rhs = np.random.randn(3, l_sketch) + 1j * np.random.randn(3, l_sketch) # right sketching matrix
-train_nonpar = lambda L, center, radius: beyn(L, center, radius, lhs, rhs, 25, 1e-10, 1)
+lint = 0 + 2*4 * np.exp(1j * np.linspace(1.5 * np.pi/2, 2.5 * np.pi/2, l_sketch + 1)[: -1]) # left interpolation points
+rint = 0 + 2*4 * np.exp(1j * np.linspace(- np.pi/3, np.pi/3, l_sketch + 1)[: -1]) # right interpolation points
+
+# train_nonpar = lambda L, center, radius: beyn(L, center, radius, lhs, rhs, 25, 1e-10, 1)
+train_nonpar = lambda L, center, radius: loewner(L, center, radius, lhs, rhs, lint, rint, 30, 1e-10)
 
 tol = 1e-2 # tolerance for outer adaptive loop
 interp_kind = "linear" # interpolation strategy (piecewise-linear hat functions)
